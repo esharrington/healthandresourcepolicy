@@ -6,14 +6,14 @@
 
 ## Lunch Bets 25 Sept
 
-Tamee - Pasta (Italian)
+Tamee - Pasta (Italian) :spaghetti:
 
-Elise - Salad 
+Elise - Salad :tomato:
 
-TJ - Sliders
+TJ - Sliders :hamburger:
 
-Andrea - Sandwich
+Andrea - Sandwich :bread:
 
-Tina - Chinese
+Tina - Chinese :curry:
 
-Rebecca - BBQ
+Rebecca - BBQ :poultry_leg:
