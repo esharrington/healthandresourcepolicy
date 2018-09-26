@@ -14,6 +14,6 @@ TJ - Sliders :hamburger:
 
 Andrea - Sandwich :bread:
 
-Tina - Chinese :curry:
+Tina - Chinese :curry: 
 
-Rebecca - BBQ :poultry_leg:
+Rebecca - pizza :pizza:
