@@ -19,7 +19,7 @@ install.packages("quanteda")
 library(quanteda)
 
 # test based on Welbers p. 248 
-filepath <- ("~/Dropbox (MIT)/Research Projects/SESYNC/text_analysis/corpus/files")
+filepath <- ("/nfs/HealthandResourcePolicy-data/Task 1/corpus/renamed files/new")
 # approach from quanteda github 
 # https://github.com/quanteda/quanteda_tutorials/blob/master/content/import-data/multiple-files.en.Rmarkdown
 
