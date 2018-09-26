@@ -45,32 +45,13 @@ test_data <- readtext(paste0(filepath, "/*.txt"),
                       dvsep = "_") 
 str(test_data)
 names(test_data) 
-
-encoding(test_data) # not all UTF-8, try to fix this
-
-## ---- explore encoding ---- ## 
-# if we do not re-encode the files we get 1144 of "s_n_gal" which seems to be missing é
-# and we get 661 of sénégal 
-# if we do re-encode those counts of s_n_gal are no longer there and we only get the 661 of sénégal 
-
-# https://stackoverflow.com/questions/9511281/handling-special-characters-e-g-accents-in-r
-test_data$text <- iconv(test_data$text, to="UTF-8")
-encoding(test_data)
-
-# install.packages("stringr")
-library(stringr)
-str_conv(test_data$text, "UTF-8")
-
-encoding(test_data)
-
-## ---- end explore encoding ---- ## 
+encoding(test_data) 
 
 # form a corpus (per https://tutorials.quanteda.io/basic-operations/corpus/corpus/)
 test_corpus <- corpus(test_data)
 summary(test_corpus) # should we take out the document names? it's making the summary pretty illegible 
 
 # keep corpus as an original reference copy -- do not edit directly 
-
 # make timeline based on quanteda quickstart code 
 tokenInfo <- summary(test_corpus)
 if (require(ggplot2))
