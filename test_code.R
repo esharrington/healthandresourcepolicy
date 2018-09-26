@@ -1,7 +1,7 @@
 # make a shortcut from home directory to our group folder 
-file.symlink(from = '/nfs/HealthandResourcePolicy-data', to = 'data')
+# file.symlink(from = '/nfs/HealthandResourcePolicy-data', to = 'data')
 
-setwd("/nfs/HealthandResourcePolicy-data/Task 1/corpus")
+setwd("/Users/Tihitina/Dropbox (IFPRI)/SESYNC/new")
 
 # clear workspace
 rm (list =ls())
@@ -19,7 +19,7 @@ install.packages("quanteda")
 library(quanteda)
 
 # test based on Welbers p. 248 
-filepath <- ("/nfs/HealthandResourcePolicy-data/Task 1/corpus/renamed files/new")
+filepath <- ("/Users/Tihitina/Dropbox (IFPRI)/SESYNC/new")
 # approach from quanteda github 
 # https://github.com/quanteda/quanteda_tutorials/blob/master/content/import-data/multiple-files.en.Rmarkdown
 
