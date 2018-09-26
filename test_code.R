@@ -87,4 +87,3 @@ dfm_select(test_dfm, pattern = "é", valuetype = "regex") %>% topfeatures()
 freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent
 head(freq, 200)
 
-
