@@ -13,9 +13,9 @@ cat("\014")
 # https://tutorials.quanteda.io/import-data/multiple-files/
 # Welbers et al. 2017 
 
-install.packages("readtext")
+# install.packages("readtext")
 library(readtext)
-install.packages("quanteda")
+# install.packages("quanteda")
 library(quanteda)
 
 # test based on Welbers p. 248 
@@ -47,15 +47,15 @@ str(test_data)
 names(test_data) 
 encoding(test_data) 
 
-# form a corpus (per https://tutorials.quanteda.io/basic-operations/corpus/corpus/)
+# form a corpus (https://tutorials.quanteda.io/basic-operations/corpus/corpus/)
 test_corpus <- corpus(test_data)
-summary(test_corpus) # should we take out the document names? it's making the summary pretty illegible 
+summary(test_corpus) 
 
 # keep corpus as an original reference copy -- do not edit directly 
 # make timeline based on quanteda quickstart code 
 tokenInfo <- summary(test_corpus)
 if (require(ggplot2))
-  ggplot(data=tokenInfo, aes(x = year, y = Tokens, group = 1)) + geom_line() + geom_point() +
+ggplot(data=tokenInfo, aes(x = year, y = Tokens, group = 1)) + geom_line() + geom_point() +
   scale_x_continuous(labels = c(seq(1789, 2017, 12)), breaks = seq(1789, 2017, 12)) +
   theme_bw()
 
@@ -66,7 +66,7 @@ head(stopwords("french")) # built in stopwords
 # http://docs.quanteda.io/reference/stopwords.html  -- test this multiple times 
 
 # corpus --> tokens 
-test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 3)
+test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
 head(test_tokens[[1]], 100) # this line doesn't work anymore 
 
 # test removing stopwords 
@@ -81,5 +81,5 @@ topfeatures(test_dfm)
 dfm_select(test_dfm, pattern = "é", valuetype = "regex") %>% topfeatures()
 
 freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent
-head(freq, 50)
+head(freq, 150)
 
