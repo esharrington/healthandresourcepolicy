@@ -21,10 +21,10 @@ library(quanteda)
 # test based on Welbers p. 248 
 filepath <- ("/nfs/HealthandResourcePolicy-data/Task 1/corpus/data/Task 1/corpus/renamed files/new")
 # approach from quanteda github 
-# https://github.com/quanteda/quanteda_tutorials/blob/master/content/import-data/multiple-files.en.Rmarkdown
+# ref: https://github.com/quanteda/quanteda_tutorials/blob/master/content/import-data/multiple-files.en.Rmarkdown
 
 # test based on https://tutorials.quanteda.io/import-data/multiple-files/
-# information to include in file name: documentname_number_org_lang_year_doctype
+# information to include in file name: number_org_lang_year_doctype
 
 # test for pdfs 
 #test_data <- readtext(paste0(filepath, "/*.pdf"), 
@@ -47,7 +47,8 @@ str(test_data)
 names(test_data) 
 encoding(test_data) 
 
-# form a corpus (https://tutorials.quanteda.io/basic-operations/corpus/corpus/)
+# form a corpus 
+# ref: https://tutorials.quanteda.io/basic-operations/corpus/corpus/
 test_corpus <- corpus(test_data)
 summary(test_corpus) 
 
@@ -63,10 +64,11 @@ ggplot(data=tokenInfo, aes(x = year, y = Tokens, group = 1)) + geom_line() + geo
 kwic(test_corpus, "santé") # shows "keywords-in-context"
 
 # build out stopwords 
+# ref: http://docs.quanteda.io/reference/stopwords.html 
 head(stopwords("french")) # built in stopwords 
-# http://docs.quanteda.io/reference/stopwords.html  -- test this multiple times 
 
 # manually removing stop words
+# ref: https://github.com/quanteda/quanteda/issues/937
 stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
                 "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
                 "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc")
