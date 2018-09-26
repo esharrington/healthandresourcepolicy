@@ -4,6 +4,16 @@
 
 -Rebecca Wall 
 
+-Andrea Lund
+
+-Elise Harrington
+
+-TJ Hora
+
+-Tina Andarge
+
+-Tamee Albrecht
+
 ## Lunch Bets 26 Sept
 
 Tamee - Pasta (Italian) :spaghetti:
