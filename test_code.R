@@ -83,3 +83,7 @@ dfm_select(test_dfm, pattern = "é", valuetype = "regex") %>% topfeatures()
 freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent
 head(freq, 150)
 
+# Manually removing stop words
+stopwords1<-c("a", "i", "mise", "of")
+test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1), remove_punct = TRUE)
+
