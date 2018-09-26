@@ -1,7 +1,7 @@
 # make a shortcut from home directory to our group folder 
 # file.symlink(from = '/nfs/HealthandResourcePolicy-data', to = 'data')
 
-setwd("/Users/Tihitina/Dropbox (IFPRI)/SESYNC/new")
+setwd("/nfs/HealthandResourcePolicy-data/Task 1/corpus/data/Task 1/corpus")
 
 # clear workspace
 rm (list =ls())
@@ -19,7 +19,7 @@ library(readtext)
 library(quanteda)
 
 # test based on Welbers p. 248 
-filepath <- ("/Users/Tihitina/Dropbox (IFPRI)/SESYNC/new")
+filepath <- ("/nfs/HealthandResourcePolicy-data/Task 1/corpus/data/Task 1/corpus/renamed files/new")
 # approach from quanteda github 
 # https://github.com/quanteda/quanteda_tutorials/blob/master/content/import-data/multiple-files.en.Rmarkdown
 
@@ -62,28 +62,27 @@ ggplot(data=tokenInfo, aes(x = year, y = Tokens, group = 1)) + geom_line() + geo
 # explore documents
 kwic(test_corpus, "santé") # shows "keywords-in-context"
 
+# build out stopwords 
 head(stopwords("french")) # built in stopwords 
 # http://docs.quanteda.io/reference/stopwords.html  -- test this multiple times 
+
+# manually removing stop words
+stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
+                "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
+                "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc")
 
 # corpus --> tokens 
 test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
 head(test_tokens[[1]], 100) # this line doesn't work anymore 
 
-# test removing stopwords 
-tokens_remove(test_tokens, stopwords("french")) # split up english and french documents
-head(test_tokens[[1]], 100) 
-
 # tokens --> dfm 
 # note: if we want a to use bi or trigrams in our analysis we set that when we tokenize and then make than into a dfm 
-test_dfm <- dfm(test_tokens, tolower = TRUE, remove = stopwords("french"), remove_punct = TRUE)
+test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1), remove_punct = TRUE)
 topfeatures(test_dfm)
 
 dfm_select(test_dfm, pattern = "é", valuetype = "regex") %>% topfeatures()
 
 freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent
-head(freq, 150)
+head(freq, 200)
 
-# Manually removing stop words
-stopwords1<-c("a", "i", "mise", "of")
-test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1), remove_punct = TRUE)
 
