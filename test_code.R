@@ -48,16 +48,22 @@ names(test_data)
 
 encoding(test_data) # not all UTF-8, try to fix this
 
+## ---- explore encoding ---- ## 
+# if we do not re-encode the files we get 1144 of "s_n_gal" which seems to be missing é
+# and we get 661 of sénégal 
+# if we do re-encode those counts of s_n_gal are no longer there and we only get the 661 of sénégal 
+
 # https://stackoverflow.com/questions/9511281/handling-special-characters-e-g-accents-in-r
 test_data$text <- iconv(test_data$text, to="UTF-8")
 encoding(test_data)
 
-# https://stringr.tidyverse.org/reference/str_conv.html
 # install.packages("stringr")
 library(stringr)
 str_conv(test_data$text, "UTF-8")
 
 encoding(test_data)
+
+## ---- end explore encoding ---- ## 
 
 # form a corpus (per https://tutorials.quanteda.io/basic-operations/corpus/corpus/)
 test_corpus <- corpus(test_data)
