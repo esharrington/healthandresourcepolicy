@@ -1,7 +1,7 @@
 # make a shortcut from home directory to our group folder 
 # file.symlink(from = '/nfs/HealthandResourcePolicy-data', to = 'data')
 
-setwd("/nfs/HealthandResourcePolicy-data/Task 1/corpus/data/Task 1/corpus")
+setwd("~/healthandresourcepolicy/data/Task 1/corpus")
 
 # clear workspace
 rm (list =ls())
@@ -19,7 +19,7 @@ library(readtext)
 library(quanteda)
 
 # test based on Welbers p. 248 
-filepath <- ("/nfs/HealthandResourcePolicy-data/Task 1/corpus/data/Task 1/corpus/renamed files/new")
+filepath <- ("/nfs/HealthandResourcePolicy-data/Task 1/corpus/for_R")
 # approach from quanteda github 
 # ref: https://github.com/quanteda/quanteda_tutorials/blob/master/content/import-data/multiple-files.en.Rmarkdown
 
@@ -74,15 +74,30 @@ stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre"
                 "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc")
 
 # corpus --> tokens 
-test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
-head(test_tokens[[1]], 100) # this line doesn't work anymore 
+test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 3)
 
 # tokens --> dfm 
 # note: if we want a to use bi or trigrams in our analysis we set that when we tokenize and then make than into a dfm 
 test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1), remove_punct = TRUE)
-topfeatures(test_dfm)
+topfeatures(test_dfm) # picking up errors: i_i_i etc. 
 
 dfm_select(test_dfm, pattern = "é", valuetype = "regex") %>% topfeatures()
+
+nfeat(test_dfm) # number of features
+
+# make a feature co-occurence matrix https://tutorials.quanteda.io/basic-operations/fcm/fcm/
+test_dfm_trim <- dfm_trim(test_dfm, min_termfreq = 100)
+nfeat(test_dfm_trim) # number of features
+test_fcm <- fcm(test_dfm_trim) # r keeps failing when I try to do this
+topfeatures(test_fcm)
+
+feat <- names(topfeatures(test_fcm, 50))
+test_fcm_trim_select <- fcm_select(test_fcm, pattern = feat)
+dim(test_fcm_trim_select)
+
+size <- log(colSums(dfm_select(test_dfm, feat)))
+set.seed(144)
+textplot_network(test_fcm_trim_select, min_freq = 0.8, vertex_size = size / max(size) * 3)
 
 freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent
 head(freq, 200)
