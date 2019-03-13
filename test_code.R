@@ -102,3 +102,8 @@ size <- log(colSums(dfm_select(test_dfm, feat)))
 set.seed(144)
 textplot_network(test_fcm_trim_select, min_freq = 0.8, vertex_size = size / max(size) * 3)
 
+# descriptive statistics 
+freq <- textstat_frequency(test_dfm, n = 5, groups = "doc_type")
+head(freq, 20)
+
+#continue here: https://tutorials.quanteda.io/statistical-analysis/frequency/
