@@ -71,15 +71,18 @@ head(stopwords("french")) # built in stopwords
 # ref: https://github.com/quanteda/quanteda/issues/937
 stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
                 "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
-                "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc")
+                "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i_i_i", "o_o_", "x_x_")
 
 # corpus --> tokens 
-test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 3)
+test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
 
 # tokens --> dfm 
 # note: if we want a to use bi or trigrams in our analysis we set that when we tokenize and then make than into a dfm 
 test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1), remove_punct = TRUE)
-topfeatures(test_dfm) # picking up errors: i_i_i etc. 
+topfeatures(test_dfm) # picking up errors: i_i_i etc., removed using stopwords1 above -- errors seem to depend a lot on n-gram determination
+
+freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent (fixed using correct encoding)
+head(freq, 200)
 
 dfm_select(test_dfm, pattern = "é", valuetype = "regex") %>% topfeatures()
 
@@ -98,7 +101,4 @@ dim(test_fcm_trim_select)
 size <- log(colSums(dfm_select(test_dfm, feat)))
 set.seed(144)
 textplot_network(test_fcm_trim_select, min_freq = 0.8, vertex_size = size / max(size) * 3)
-
-freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent
-head(freq, 200)
 
