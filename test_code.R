@@ -175,4 +175,3 @@ tstat_col <- tokens_select(test_tokens, pattern = '^[A-Z]',
   textstat_collocations(min_count = 100)
 head(tstat_col_caps, 20) # this is helpful in figuring out what to drop 
 
-# try compound multi-word expressions instead of just colocation analysis 
