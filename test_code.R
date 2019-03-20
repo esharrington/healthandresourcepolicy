@@ -47,6 +47,13 @@ str(test_data)
 names(test_data) 
 encoding(test_data) 
 
+# Create new variable for decade
+for (i in seq(1960,2010,10)){
+ test_data$decade[test_data$year >= i & test_data$year <= i+9] = i
+}
+test_data$decade<-paste(test_data$decade,"s",sep="")
+
+
 # form a corpus 
 # ref: https://tutorials.quanteda.io/basic-operations/corpus/corpus/
 test_corpus <- corpus(test_data)
@@ -103,7 +110,39 @@ set.seed(144)
 textplot_network(test_fcm_trim_select, min_freq = 0.8, vertex_size = size / max(size) * 3)
 
 # descriptive statistics 
-freq <- textstat_frequency(test_dfm, n = 5, groups = "doc_type")
+freq <- textstat_frequency(test_dfm, n = 5, groups = "doc_type") # what are the groups assessmentX and studyX? (TA)
 head(freq, 20)
 
-#continue here: https://tutorials.quanteda.io/statistical-analysis/frequency/
+freq_by_year <- textstat_frequency(test_dfm, n=5, groups = "year")
+freq_by_decade <- textstat_frequency(test_dfm, n=5, groups = "decade") 
+# maybe we can do this by decade after removing words that don't give much insight? (TA)
+
+# plot of most frequent words
+test_dfm %>% textstat_frequency(n = 25) %>%
+  ggplot(aes(x = reorder(feature, frequency), y = frequency)) +
+  geom_point() +
+  coord_flip() +
+  labs(x = NULL, y = "Frequency") +
+  theme_minimal()
+
+# wordcloud of most common words
+set.seed(144)
+textplot_wordcloud(test_dfm, max_words=100)
+
+
+# calculate lexical diversity
+test_lexdiv <- textstat_lexdiv(test_dfm)
+
+plot(test_lexdiv$TTR, type = 'l', xaxt = 'n', xlab = NULL, ylab = "TTR")
+grid()
+axis(1, at = seq_len(nrow(test_lexdiv)), labels = docvars(test_dfm, "doc_type"))
+ # need to sort the dfm by doc_type in order for this to work, I think?
+ # many different measures...which one should we use?
+
+# document feature similarity
+test_dist <- textstat_dist(test_dfm) # I stopped here. I need to read up on what
+                                     # exactly this is doing
+
+#continue here: https://tutorials.quanteda.io/statistical-analysis/dist/
+
+
