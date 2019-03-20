@@ -167,7 +167,7 @@ require(lubridate)
 
 #textplot_keyness(tstat_key)
 
-# colocation analysis (using tokens not dfm, so stopwords and others not dropped)
+# colocation analysis (using tokens not dfm, so stopwords and others not dropped, so it's messy)
 tstat_col <- tokens_select(test_tokens, pattern = '^[A-Z]', 
                                 valuetype = 'regex', 
                                 case_insensitive = TRUE, 
