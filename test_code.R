@@ -98,7 +98,7 @@ nfeat(test_dfm) # number of features
 # make a feature co-occurence matrix https://tutorials.quanteda.io/basic-operations/fcm/fcm/
 test_dfm_trim <- dfm_trim(test_dfm, min_termfreq = 100)
 nfeat(test_dfm_trim) # number of features
-test_fcm <- fcm(test_dfm_trim) # r keeps failing when I try to do this
+test_fcm <- fcm(test_dfm_trim) # r keeps failing when I try to do this, works if you limit term freq
 topfeatures(test_fcm)
 
 feat <- names(topfeatures(test_fcm, 50))
@@ -110,14 +110,19 @@ set.seed(144)
 textplot_network(test_fcm_trim_select, min_freq = 0.8, vertex_size = size / max(size) * 3)
 
 # descriptive statistics 
-freq <- textstat_frequency(test_dfm, n = 5, groups = "doc_type") # what are the groups assessmentX and studyX? (TA)
+freq <- textstat_frequency(test_dfm, n = 5, groups = "doc_type") # what are the groups assessmentX and studyX? (TA) 
+# just marking the ones that I could recall that are incomplete pdfs
 head(freq, 20)
 
 freq_by_year <- textstat_frequency(test_dfm, n=5, groups = "year")
+head(freq_by_year, 20)
 freq_by_decade <- textstat_frequency(test_dfm, n=5, groups = "decade") 
+head(freq_by_decade, 20)
 # maybe we can do this by decade after removing words that don't give much insight? (TA)
+# I think that's a good idea, we can also try do those periods of time we are interested in (EH)
 
 # plot of most frequent words
+# should we think about dropping fleuve and senegal? (EH)
 test_dfm %>% textstat_frequency(n = 25) %>%
   ggplot(aes(x = reorder(feature, frequency), y = frequency)) +
   geom_point() +
@@ -129,20 +134,34 @@ test_dfm %>% textstat_frequency(n = 25) %>%
 set.seed(144)
 textplot_wordcloud(test_dfm, max_words=100)
 
-
 # calculate lexical diversity
 test_lexdiv <- textstat_lexdiv(test_dfm)
 
 plot(test_lexdiv$TTR, type = 'l', xaxt = 'n', xlab = NULL, ylab = "TTR")
 grid()
 axis(1, at = seq_len(nrow(test_lexdiv)), labels = docvars(test_dfm, "doc_type"))
- # need to sort the dfm by doc_type in order for this to work, I think?
- # many different measures...which one should we use?
+ # need to sort the dfm by doc_type in order for this to work, I think? (TA)
+ # many different measures...which one should we use? (TA)
+ # yeah, I think doc_type makes sense for this measure, but it might not be a super valuable 
+ # metric for us unless we want to dive into the complexity of the language (EH)
 
 # document feature similarity
-test_dist <- textstat_dist(test_dfm) # I stopped here. I need to read up on what
-                                     # exactly this is doing
+test_dist <- textstat_dist(test_dfm)
+# I stopped here. I need to read up on what exactly this is doing (TA)
+# I think it is doing a hierarchical cluster analysis, I can share some info on this if you want (EH)
+clust <- hclust(test_dist)
+plot(clust, xlab = "Distance", ylab = NULL)
+# but we would need to change the titles or just use one part of the title to be able to see the clusters
 
+#relative frequency analysis
+require(lubridate)
+
+# need to make this into our key time periods 
+tstat_key <- textstat_keyness(test_dfm, 
+                              target = year(docvars(test_dfm, 'date')) >= 2016)
+attr(tstat_key, 'documents') <- c('2016', '2012-2015')
+
+textplot_keyness(tstat_key)
 #continue here: https://tutorials.quanteda.io/statistical-analysis/dist/
 
 
