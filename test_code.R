@@ -86,6 +86,7 @@ dropwords1 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa")
 # corpus --> tokens 
 test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
 
+
 # tokens --> dfm 
 # note: if we want a to use bi or trigrams in our analysis we set that when we tokenize and then make than into a dfm 
 test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1, dropwords1), remove_punct = TRUE)
@@ -167,7 +168,7 @@ require(lubridate)
 
 #textplot_keyness(tstat_key)
 
-# colocation analysis (using tokens not dfm, so stopwords and others not dropped)
+# colocation analysis (using tokens not dfm, so stopwords and others not dropped, so it's messy)
 tstat_col <- tokens_select(test_tokens, pattern = '^[A-Z]', 
                                 valuetype = 'regex', 
                                 case_insensitive = TRUE, 
