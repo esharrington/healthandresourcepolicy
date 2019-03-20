@@ -53,6 +53,8 @@ for (i in seq(1960,2010,10)){
 }
 test_data$decade<-paste(test_data$decade,"s",sep="")
 
+# change year into a useable date (does anyone know how to make just a year a date, not including day-month)
+## code needed 
 
 # form a corpus 
 # ref: https://tutorials.quanteda.io/basic-operations/corpus/corpus/
@@ -78,14 +80,15 @@ head(stopwords("french")) # built in stopwords
 # ref: https://github.com/quanteda/quanteda/issues/937
 stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
                 "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
-                "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i_i_i", "o_o_", "x_x_")
+                "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x")
+dropwords1 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa")
 
 # corpus --> tokens 
 test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
 
 # tokens --> dfm 
 # note: if we want a to use bi or trigrams in our analysis we set that when we tokenize and then make than into a dfm 
-test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1), remove_punct = TRUE)
+test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1, dropwords1), remove_punct = TRUE)
 topfeatures(test_dfm) # picking up errors: i_i_i etc., removed using stopwords1 above -- errors seem to depend a lot on n-gram determination
 
 freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent (fixed using correct encoding)
@@ -156,12 +159,20 @@ plot(clust, xlab = "Distance", ylab = NULL)
 #relative frequency analysis
 require(lubridate)
 
-# need to make this into our key time periods 
-tstat_key <- textstat_keyness(test_dfm, 
-                              target = year(docvars(test_dfm, 'date')) >= 2016)
-attr(tstat_key, 'documents') <- c('2016', '2012-2015')
+# this won't work until we get a date variable (note at top -- do you know how to do this with just year?)
+# try this relative frequency analysis with our key time periods 
+#tstat_key <- textstat_keyness(test_dfm,
+    #target = year(docvars(test_dfm, 'year')) >= 2016)
+#attr(tstat_key, 'documents') <- c('2016', '2012-2015')
 
-textplot_keyness(tstat_key)
-#continue here: https://tutorials.quanteda.io/statistical-analysis/dist/
+#textplot_keyness(tstat_key)
 
+# colocation analysis (using tokens not dfm, so stopwords and others not dropped)
+tstat_col <- tokens_select(test_tokens, pattern = '^[A-Z]', 
+                                valuetype = 'regex', 
+                                case_insensitive = TRUE, 
+                                padding = TRUE) %>% 
+  textstat_collocations(min_count = 100)
+head(tstat_col_caps, 20) # this is helpful in figuring out what to drop 
 
+# try compound multi-word expressions instead of just colocation analysis 
