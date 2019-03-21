@@ -53,8 +53,10 @@ for (i in seq(1960,2010,10)){
 }
 test_data$decade<-paste(test_data$decade,"s",sep="")
 
+names(test_data) # check it worked
+
 # change year into a useable date (does anyone know how to make just a year a date, not including day-month)
-## code needed 
+
 
 # form a corpus 
 # ref: https://tutorials.quanteda.io/basic-operations/corpus/corpus/
@@ -78,6 +80,7 @@ head(stopwords("french")) # built in stopwords
 
 # manually removing stop words
 # ref: https://github.com/quanteda/quanteda/issues/937
+# stopwords and dropwords for unigrams (dropwords = our term for words that should be dropped in addition to stop words)
 stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
                 "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
                 "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x")
@@ -99,9 +102,7 @@ dropwords3 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa")
 # corpus --> tokens 
 test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
 
-<<<<<<< HEAD
-=======
-# create bigrams and trigrams
+# create corpi? with bigrams and trigrams
 tokens_n2 <- tokens_remove(test_tokens, c(stopwords("french"), stopwords1, dropwords1))
 tokens_n2 <- tokens(tokens_n2, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 2)
 tokens_n2 <- tokens_remove(tokens_n2, c(stopwords("french"), stopwords2, dropwords2))
@@ -109,7 +110,6 @@ tokens_n2 <- tokens_remove(tokens_n2, c(stopwords("french"), stopwords2, dropwor
 tokens_n3 <- tokens_remove(test_tokens, c(stopwords("french"), stopwords1, dropwords1))
 tokens_n3 <- tokens(tokens_n3, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 3)
 tokens_n3 <- tokens_remove(tokens_n3, c(stopwords("french"), stopwords3, dropwords3))
->>>>>>> e543a6e89ee46de792083130e6b02caf44bdc63b
 
 # tokens --> dfm 
 # note: if we want a to use bi or trigrams in our analysis we set that when we tokenize and then make than into a dfm 
@@ -165,6 +165,22 @@ head(freq_by_decade, 20)
 # plot of most frequent words
 # should we think about dropping fleuve and senegal? (EH)
 test_dfm %>% textstat_frequency(n = 25) %>%
+  ggplot(aes(x = reorder(feature, frequency), y = frequency)) +
+  geom_point() +
+  coord_flip() +
+  labs(x = NULL, y = "Frequency") +
+  theme_minimal()
+
+# plot of most frequent words(bigrams)
+dfm_n2 %>% textstat_frequency(n = 25) %>%
+  ggplot(aes(x = reorder(feature, frequency), y = frequency)) +
+  geom_point() +
+  coord_flip() +
+  labs(x = NULL, y = "Frequency") +
+  theme_minimal()
+
+# plot of most frequent words (trigrams)
+dfm_n3 %>% textstat_frequency(n = 25) %>%
   ggplot(aes(x = reorder(feature, frequency), y = frequency)) +
   geom_point() +
   coord_flip() +
