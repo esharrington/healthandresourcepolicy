@@ -83,17 +83,54 @@ stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre"
                 "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x")
 dropwords1 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa")
 
+# stopwords and dropwords for bigrams and trigrams
+stopwords2<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
+              "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
+              "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x",
+              "i_i", "o_o")
+dropwords2 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "f_cfa", "of_the")
+
+stopwords3<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
+              "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
+              "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x",
+              "i_i_i", "o_o_o", "i_i_i_i_i_i")
+dropwords3 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa")
+
 # corpus --> tokens 
 test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
 
+<<<<<<< HEAD
+=======
+# create bigrams and trigrams
+tokens_n2 <- tokens_remove(test_tokens, c(stopwords("french"), stopwords1, dropwords1))
+tokens_n2 <- tokens(tokens_n2, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 2)
+tokens_n2 <- tokens_remove(tokens_n2, c(stopwords("french"), stopwords2, dropwords2))
+
+tokens_n3 <- tokens_remove(test_tokens, c(stopwords("french"), stopwords1, dropwords1))
+tokens_n3 <- tokens(tokens_n3, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 3)
+tokens_n3 <- tokens_remove(tokens_n3, c(stopwords("french"), stopwords3, dropwords3))
+>>>>>>> e543a6e89ee46de792083130e6b02caf44bdc63b
 
 # tokens --> dfm 
 # note: if we want a to use bi or trigrams in our analysis we set that when we tokenize and then make than into a dfm 
 test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1, dropwords1), remove_punct = TRUE)
 topfeatures(test_dfm) # picking up errors: i_i_i etc., removed using stopwords1 above -- errors seem to depend a lot on n-gram determination
 
+# dfm for bigrams and trigrams
+dfm_n2 <- dfm(tokens_n2, tolower = TRUE, remove = c(stopwords("french"), stopwords2, dropwords2), remove_punct = TRUE)
+topfeatures(dfm_n2)
+dfm_n3 <- dfm(tokens_n3, tolower = TRUE, remove_punct = TRUE)
+topfeatures(dfm_n3)
+
+# frequency analysis
 freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent (fixed using correct encoding)
 head(freq, 200)
+
+freq_n2 <- textstat_frequency(dfm_n2)
+head(freq_n2, 200)
+
+freq_n3 <- textstat_frequency(dfm_n3)
+head(freq_n3, 200)
 
 dfm_select(test_dfm, pattern = "é", valuetype = "regex") %>% topfeatures()
 
