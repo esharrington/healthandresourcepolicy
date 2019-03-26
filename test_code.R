@@ -56,7 +56,11 @@ test_data$decade<-paste(test_data$decade,"s",sep="")
 names(test_data) # check it worked
 
 # change year into a useable date (does anyone know how to make just a year a date, not including day-month)
+#test_data$mo <- 01
+#test_data$day <- 01
+#test_data$yr <- test_data$year
 
+#ISOdate(year = yr, month = mo, day = day)
 
 # form a corpus 
 # ref: https://tutorials.quanteda.io/basic-operations/corpus/corpus/
@@ -85,21 +89,25 @@ stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d'un", "d’une", "entre", 
                 "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
                 "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", 
                 "x x", " d'une", "ha", "cas")
-dropwords1 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "être", "rapport", "agrer")
+dropwords1 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "être", "rapport", "agrer", 
+               "mio")
 
 # stopwords and dropwords for bigrams and trigrams
 stopwords2<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
               "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
               "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x",
               "i_i", "o_o")
-dropwords2 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "f_cfa", "of_the", "doit_être", "doivent_être")
+dropwords2 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "f_cfa", "of_the", "doit_être", 
+               "doivent_être", "b.doc_rp", "gouina_b.doc", "bellier_gouina", "rp_bellier", "s.a_n.v", "phase_gouina",
+               "n.v_mali", "mali_etude", "mio_nombre")
 
 stopwords3<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
               "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
               "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x",
               "i_i_i", "o_o_o", "i_i_i_i_i_i")
 dropwords3 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "s.a_agrer_n.v", "rapport_final_phase", "b.doc_rapport_", "rapport_rp_bellier", 
-                " n.v_mali_etude", "s.a_n.v_mali")
+                " n.v_mali_etude", "s.a_n.v_mali", "mio_nombre_d'unités", "n.v_mali_etude", "b.doc_rp_bellier", 
+               "phase_gouina_b.doc", "rp_bellier_gouina", "mali_etude_impacts", "gouina_b.doc_rp")
 
 # corpus --> tokens 
 test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
@@ -118,9 +126,11 @@ tokens_n3 <- tokens_remove(tokens_n3, c(stopwords("french"), stopwords3, dropwor
 test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1, dropwords1), remove_punct = TRUE)
 topfeatures(test_dfm) # picking up errors: i_i_i etc., removed using stopwords1 above -- errors seem to depend a lot on n-gram determination
 
-# dfm for bigrams and trigrams
+# dfm for bigrams
 dfm_n2 <- dfm(tokens_n2, tolower = TRUE, remove = c(stopwords("french"), stopwords2, dropwords2), remove_punct = TRUE)
 topfeatures(dfm_n2)
+
+#dfm for trigrams
 dfm_n3 <- dfm(tokens_n3, tolower = TRUE, remove_punct = TRUE)
 topfeatures(dfm_n3)
 
@@ -174,8 +184,20 @@ textplot_network(fcm_n2_trim_select, min_freq = 0.8, vertex_size = size / max(si
 # this is helpful to identify outliers 
 
 #fcm with trigrams 
+dfm_n3_trim <- dfm_trim(dfm_n3, min_termfreq = 100)
+nfeat(dfm_n3_trim) # number of features
+fcm_n3 <- fcm(dfm_n3_trim) # r keeps failing when I try to do this, works if you limit term freq
+topfeatures(fcm_n3)
 
-# descriptive statistics 
+feat <- names(topfeatures(fcm_n3, 50))
+fcm_n3_trim_select <- fcm_select(fcm_n3, pattern = feat)
+dim(fcm_n3_trim_select)
+
+size <- log(colSums(dfm_select(dfm_n3, feat)))
+set.seed(144)
+textplot_network(fcm_n3_trim_select, min_freq = 0.8, vertex_size = size / max(size) * 3) 
+
+# descriptive statistics (unigram)
 freq <- textstat_frequency(test_dfm, n = 5, groups = "doc_type") # what are the groups assessmentX and studyX? (TA) 
 # just marking the ones that I could recall that are incomplete pdfs
 head(freq, 20)
