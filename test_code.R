@@ -81,23 +81,25 @@ head(stopwords("french")) # built in stopwords
 # manually removing stop words
 # ref: https://github.com/quanteda/quanteda/issues/937
 # stopwords and dropwords for unigrams (dropwords = our term for words that should be dropped in addition to stop words)
-stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
+stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d'un", "d’une", "entre", "dont","of", 
                 "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
-                "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x")
-dropwords1 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa")
+                "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", 
+                "x x", " d'une", "ha", "cas")
+dropwords1 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "être", "rapport", "agrer")
 
 # stopwords and dropwords for bigrams and trigrams
 stopwords2<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
               "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
               "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x",
               "i_i", "o_o")
-dropwords2 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "f_cfa", "of_the")
+dropwords2 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "f_cfa", "of_the", "doit_être", "doivent_être")
 
 stopwords3<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
               "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
               "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x",
               "i_i_i", "o_o_o", "i_i_i_i_i_i")
-dropwords3 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa")
+dropwords3 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "s.a_agrer_n.v", "rapport_final_phase", "b.doc_rapport_", "rapport_rp_bellier", 
+                " n.v_mali_etude", "s.a_n.v_mali")
 
 # corpus --> tokens 
 test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
@@ -126,11 +128,17 @@ topfeatures(dfm_n3)
 freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent (fixed using correct encoding)
 head(freq, 200)
 
+write.table(freq, "freq_n1.txt", sep="\t")
+
 freq_n2 <- textstat_frequency(dfm_n2)
 head(freq_n2, 200)
 
+write.table(freq_n2, "freq_n2.txt", sep="\t")
+
 freq_n3 <- textstat_frequency(dfm_n3)
 head(freq_n3, 200)
+
+write.table(freq_n3, "freq_n3.txt", sep="\t")
 
 dfm_select(test_dfm, pattern = "é", valuetype = "regex") %>% topfeatures()
 
@@ -149,6 +157,23 @@ dim(test_fcm_trim_select)
 size <- log(colSums(dfm_select(test_dfm, feat)))
 set.seed(144)
 textplot_network(test_fcm_trim_select, min_freq = 0.8, vertex_size = size / max(size) * 3)
+
+# fcm with bigrams
+dfm_n2_trim <- dfm_trim(dfm_n2, min_termfreq = 100)
+nfeat(dfm_n2_trim) # number of features
+fcm_n2 <- fcm(dfm_n2_trim) # r keeps failing when I try to do this, works if you limit term freq
+topfeatures(fcm_n2)
+
+feat <- names(topfeatures(fcm_n2, 50))
+fcm_n2_trim_select <- fcm_select(fcm_n2, pattern = feat)
+dim(fcm_n2_trim_select)
+
+size <- log(colSums(dfm_select(dfm_n2, feat)))
+set.seed(144)
+textplot_network(fcm_n2_trim_select, min_freq = 0.8, vertex_size = size / max(size) * 3) 
+# this is helpful to identify outliers 
+
+#fcm with trigrams 
 
 # descriptive statistics 
 freq <- textstat_frequency(test_dfm, n = 5, groups = "doc_type") # what are the groups assessmentX and studyX? (TA) 
