@@ -55,17 +55,11 @@ test_data$decade<-paste(test_data$decade,"s",sep="")
 
 names(test_data) # check it worked
 
-# change year into a useable date (does anyone know how to make just a year a date, not including day-month)
-#test_data$mo <- 01
-#test_data$day <- 01
-#test_data$yr <- test_data$year
-
-#ISOdate(year = yr, month = mo, day = day)
-
 # form a corpus 
 # ref: https://tutorials.quanteda.io/basic-operations/corpus/corpus/
 test_corpus <- corpus(test_data)
 summary(test_corpus) 
+
 
 # keep corpus as an original reference copy -- do not edit directly 
 # make timeline based on quanteda quickstart code 
@@ -272,7 +266,7 @@ plot(clust, xlab = "Distance", ylab = NULL)
 #relative frequency analysis
 require(lubridate)
 
-# this won't work until we get a date variable (note at top -- do you know how to do this with just year?)
+# this won't work until we get a date variable
 # try this relative frequency analysis with our key time periods 
 #tstat_key <- textstat_keyness(test_dfm,
     #target = year(docvars(test_dfm, 'year')) >= 2016)
@@ -281,12 +275,11 @@ require(lubridate)
 # TA: is the date variable already in the format we need it in--My guess is that's why
 # plugging it into the year function does not work...not sure though
 tstat_key <- textstat_keyness(test_dfm,
- target = docvars(test_dfm, 'year') >= 2016) # I think this works but I'm not sure if
+ target = docvars(test_dfm, 'year') >= 1990) # I think this works but I'm not sure if
 # it is doing what we want it to (TA).
 textplot_keyness(tstat_key)
 # very confused about how the "attr()" function works for this -- the results seem to 
 # be the same with our without it
-
 
 
 #textplot_keyness(tstat_key)
@@ -312,6 +305,10 @@ head(textstat_frequency(dfm(test_corpus, dictionary = mydict)))
 mydict <- dictionary(list(projet= "projet", gestion="gestion", programme="programme",
                           plan = "plan"))
 head(textstat_frequency(dfm(test_corpus, dictionary = mydict)))
+
+# break out into more descriptive categories so show specific topics and possible 
+# nexus points: agriculture, nutrition, waterborne disease, irrigation, hydrology, 
+# electricity generation, sanitation, human development 
 
 # (2) Look for words falling into pre-defined nexus categories
 # Going through the FEW-H Keyword Glossary to define the dictionary
