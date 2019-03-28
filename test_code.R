@@ -85,7 +85,7 @@ head(stopwords("french")) # built in stopwords
 # manually removing stop words
 # ref: https://github.com/quanteda/quanteda/issues/937
 # stopwords and dropwords for unigrams (dropwords = our term for words that should be dropped in addition to stop words)
-stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d'un", "d’une", "entre", "dont","of", 
+stopwords1<-c("a", "plus", "i", "mise", "o", "the", "d'un", "d'une", "entre", "dont","of", 
                 "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
                 "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", 
                 "x x", " d'une", "ha", "cas")
@@ -93,15 +93,15 @@ dropwords1 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "
                "mio")
 
 # stopwords and dropwords for bigrams and trigrams
-stopwords2<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
+stopwords2<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d'une", "entre", "dont","of", 
               "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
               "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x",
               "i_i", "o_o")
 dropwords2 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "f_cfa", "of_the", "doit_être", 
                "doivent_être", "b.doc_rp", "gouina_b.doc", "bellier_gouina", "rp_bellier", "s.a_n.v", "phase_gouina",
-               "n.v_mali", "mali_etude", "mio_nombre")
+               "n.v_mali", "mali_etude", "mio_nombre", "st_louis", "d'autre_part")
 
-stopwords3<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d’une", "entre", "dont","of", 
+stopwords3<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d'une", "entre", "dont","of", 
               "b", "ainsi", "comme", "si", "non", "and", "e", "afin", "á", "r", "x", "tous", 
               "f", "ii", "an", "peu", "donc", "page","p", "in", "rév", "lors","etc", "i i i", "o o", "x x",
               "i_i_i", "o_o_o", "i_i_i_i_i_i")
@@ -206,11 +206,23 @@ freq_by_year <- textstat_frequency(test_dfm, n=5, groups = "year")
 head(freq_by_year, 20)
 freq_by_decade <- textstat_frequency(test_dfm, n=5, groups = "decade") 
 head(freq_by_decade, 20)
+
+# bigram
+freq_by_year_n2 <- textstat_frequency(dfm_n2, n=5, groups = "year")
+head(freq_by_year_n2, 20)
+freq_by_decade_n2 <- textstat_frequency(dfm_n2, n=5, groups = "decade") 
+head(freq_by_decade_n2, 20)
+
+# trigram
+freq_by_year_n3 <- textstat_frequency(dfm_n3, n=5, groups = "year")
+head(freq_by_year_n3, 20)
+freq_by_decade_n3 <- textstat_frequency(dfm_n3, n=5, groups = "decade") 
+head(freq_by_decade_n3, 20)
 # maybe we can do this by decade after removing words that don't give much insight? (TA)
-# I think that's a good idea, we can also try do those periods of time we are interested in (EH)
+# I think that's a good idea, we can also try do those periods of time we are interested in (EH)-I like this better! (TA)
 
 # plot of most frequent words
-# should we think about dropping fleuve and senegal? (EH)
+# should we think about dropping fleuve and senegal? (EH) -- I think we should (TA)
 test_dfm %>% textstat_frequency(n = 25) %>%
   ggplot(aes(x = reorder(feature, frequency), y = frequency)) +
   geom_point() +
@@ -266,6 +278,17 @@ require(lubridate)
     #target = year(docvars(test_dfm, 'year')) >= 2016)
 #attr(tstat_key, 'documents') <- c('2016', '2012-2015')
 
+# TA: is the date variable already in the format we need it in--My guess is that's why
+# plugging it into the year function does not work...not sure though
+tstat_key <- textstat_keyness(test_dfm,
+ target = docvars(test_dfm, 'year') >= 2016) # I think this works but I'm not sure if
+# it is doing what we want it to (TA).
+textplot_keyness(tstat_key)
+# very confused about how the "attr()" function works for this -- the results seem to 
+# be the same with our without it
+
+
+
 #textplot_keyness(tstat_key)
 
 # colocation analysis (using tokens not dfm, so stopwords and others not dropped, so it's messy)
@@ -275,4 +298,51 @@ tstat_col <- tokens_select(test_tokens, pattern = '^[A-Z]',
                                 padding = TRUE) %>% 
   textstat_collocations(min_count = 100)
 head(tstat_col_caps, 20) # this is helpful in figuring out what to drop 
+
+
+# Searching for specific words (unigrams)
+
+# We can do this two ways: (1) look for specific words AND/OR (2) look for specific
+# nexus words
+mydict <- dictionary(list(projet= "projet", gestion="gestion", programme="programme",
+                          plan = "plan"))
+head(textstat_frequency(dfm(test_corpus, dictionary = mydict)))
+
+# (1) Looking for specific words (I just picked words for which I already knew the freq)
+mydict <- dictionary(list(projet= "projet", gestion="gestion", programme="programme",
+                          plan = "plan"))
+head(textstat_frequency(dfm(test_corpus, dictionary = mydict)))
+
+# (2) Look for words falling into pre-defined nexus categories
+# Going through the FEW-H Keyword Glossary to define the dictionary
+mydict <- dictionary(list(food = c("cultivée","diète","agricole","agricoles","hydro-agricoles",
+                                   "agro-indsutriels","champ","echec", "marche",
+                                   "betail","mouton","vache","chevre","culture","mil","sorgho",
+                                   "riz","arachide","fertilisants"),
+                          health = c("géohelminthiases","moustiquaires","bilharzioses",
+                                     "parasitologiques","sanitaire","épidémiologique",
+                                     "paludisme","urinaire","haematobium","intestinale",
+                                     "déparasités","morbidite","endemie","recrudescence",
+                                     "parasitose","transmission","reinfestation","mollusques",
+                                     "emergence","epidemie","ankylostomiase","ascaridaise",
+                                     "trichophalosela","elimination","onchocercose",
+                                     "alimentation","ration","privations","recolte","nourriture",
+                                     "subsister","malnutrition","avitaminose","anemie","kwashiorkor",
+                                     "maladie","schistosomiase","bilharziose","trypanosomiase",
+                                     "propagation","vecteur","malacologie","escargot","moustique",
+                                     "hote","mouche","bulinus","biomphalaria","anopheles","glossina",
+                                     "larvae","epidemie","hopital","recrudescence"),
+                          water = c("crue","eau", "puit","aquifere","recharge","rebattement",
+                                    "endiguements","superficie","estuaire","evaporation","salinite",
+                                    "debit","salinisation"),
+                          energy=c("hydroélectrique","énergie","électrique")))
+# had to add "énergie" and "électrique"...not in keyword glossary but the energy category
+# seemed lonely :(
+
+# also, this dictionary is not exhaustive...I most likely missed some words...will double
+# check tomorrow
+
+# note: for unigrams, should we only include worlds that unambiguously belong to a FEWH category?
+## for example, "production" could refer to either food or energy (TA)
+head(textstat_frequency(dfm(test_corpus, dictionary = mydict)))
 
