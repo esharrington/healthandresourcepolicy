@@ -382,3 +382,49 @@ mydict_n2 <- dictionary(list(food = c("autosuffisance alimentaire","aménagement
 
 head(textstat_frequency(dfm(test_corpus, dictionary = mydict_n2)))
 
+
+
+# Searching for specific words (trigrams)
+
+# Look for words falling into pre-defined nexus categories
+# Going through the FEW-H Keyword Glossary to define the dictionary
+mydict_n3 <- dictionary(list(food = c("cultivées en irrigué", "diète des ménages",
+                                      "desertion des terres"),
+                             
+                             health = c("carences en calcium",
+                                        "taux de prévalence",
+                                        "maladies d'origine hydrique",
+                                        "Plan Sanitaire Regional",
+                                        "taux de morbidite",
+                                        "taux de mortalite",
+                                        "traitement de masse",
+                                        "les cas observees",
+                                        "les cas cliniques",
+                                        "campagnes de traitement",
+                                        "programme de surveillance",
+                                        "sante de population",
+                                        "densite de vecteurs",
+                                        "multiplication de vecteurs",
+                                        "habitat de vecteurs",
+                                        "niveau de vie",
+                                        "dimunition de prevalence",
+                                        "chiffre de prevalence",
+                                        "amelioration de sante",
+                                        "poste de sante",
+                                        "chiffre de mortalite",
+                                        "besoins en brousse",
+                                        "besoins en latrine"),
+                             
+                             water = c("niveau des eaux",
+                                       "eau de surface",
+                                       "access de eau",
+                                       "accumulations permanents d'eau",
+                                       "l'eau de drainage",
+                                       "lutte anti-vectorielle",
+                                       "d’évaluation des impacts",
+                                       "conditions de vie"),
+                             
+                             energy=c("production d'energie electrique")))
+
+head(textstat_frequency(dfm(test_corpus, dictionary = mydict_n3)))
+
