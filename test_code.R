@@ -343,3 +343,42 @@ mydict <- dictionary(list(food = c("cultivée","diète","agricole","agricoles","
 ## for example, "production" could refer to either food or energy (TA)
 head(textstat_frequency(dfm(test_corpus, dictionary = mydict)))
 
+
+# Searching for specific words (bigrams)
+
+# Look for words falling into pre-defined nexus categories
+# Going through the FEW-H Keyword Glossary to define the dictionary
+mydict_n2 <- dictionary(list(food = c("autosuffisance alimentaire","aménagements hydroagricoles",
+                                   "activités agricoles","périmètres irrigués","aménagements agricoles",
+                                   "l’autosuffisance alimentaire","amenagement agricole",
+                                   "development agricole","production agricole",
+                                   "zone agricole","bonnes terres","champ negligee"),
+                          
+                          health = c("nutrition humaine","consommation moyenne","consommation alimentaire",
+                                     "degrees alimentaires","bonne recolte","calories suffisant",
+                                     "carences vitaminiques","carence proteinique","moyens alimentaires",
+                                     "etat nutritionelle","contact mollusque-homme","eau infestee",
+                                     "eah propre","eau saine","maladies hydriques","intensite d'infestation",
+                                     "surveillance epidemiologique","district sanitiare","indicator parasitologique",
+                                     "emission cercarienne","mollusques hotes","faible prevalence",
+                                     "forte prevalence","deparasitage repete","se reinfecter",
+                                     "statistique sanitaire","lutte efficace","taux d'infestation",
+                                     "zone endemique","indice d'infestation","sante publique",
+                                     "autorites sanitaires","plan sanitaire","repercussions sanitaires",
+                                     "facteurs sanitaires","installations sanitaires","maladie grave",
+                                     "maladie endemique","transmission saisonniere","transmission reduite",
+                                     "infection humaine","infections nombreux","taux d'infection",
+                                     "infection d'eleve","dissemination d'infection","conditions favorables",
+                                     "endemicite forte","taux d'infestation","lutte contre",
+                                     "future incidence","mesure prophylactique","chiffres elevees"),
+                          
+                          water = c("langue salee","reseau d'irrigation","canaux d'irrigation",
+                                    "l'eau d'irrigation","qualite d'eau","eau propre",
+                                    "eau fraichee","eau salee","eau stagnante",
+                                    "course d'eau","puit profond","nappe souterraines",
+                                    "aquifere alluvial","nappe phreatique","depot alluvial"),
+                          
+                          energy=c("l'énergie électrique")))
+
+head(textstat_frequency(dfm(test_corpus, dictionary = mydict_n2)))
+
