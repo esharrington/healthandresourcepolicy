@@ -6,7 +6,7 @@ setwd("~/healthandresourcepolicy/data/Task 1/corpus")
 # clear workspace
 rm (list =ls())
 cat("\014")
-
+# -----------------------------------------------------
 # trying to make a document corpus (corpus is a set of documents, 
 # document is each a unit in the corpus)
 # refs: 
@@ -47,7 +47,7 @@ str(test_data)
 names(test_data) 
 encoding(test_data) 
 
-# Create new variable for decade
+# create new variable for decade
 for (i in seq(1960,2010,10)){
  test_data$decade[test_data$year >= i & test_data$year <= i+9] = i
 }
@@ -59,8 +59,7 @@ names(test_data) # check it worked
 # ref: https://tutorials.quanteda.io/basic-operations/corpus/corpus/
 test_corpus <- corpus(test_data)
 summary(test_corpus) 
-
-
+# -----------------------------------------------------
 # keep corpus as an original reference copy -- do not edit directly 
 # make timeline based on quanteda quickstart code 
 tokenInfo <- summary(test_corpus)
@@ -68,10 +67,10 @@ if (require(ggplot2))
 ggplot(data=tokenInfo, aes(x = year, y = Tokens, group = 1)) + geom_line() + geom_point() +
   scale_x_continuous(labels = c(seq(1789, 2017, 12)), breaks = seq(1789, 2017, 12)) +
   theme_bw()
-
+# -----------------------------------------------------
 # explore documents
 kwic(test_corpus, "santé") # shows "keywords-in-context"
-
+# -----------------------------------------------------
 # build out stopwords 
 # ref: http://docs.quanteda.io/reference/stopwords.html 
 head(stopwords("french")) # built in stopwords 
@@ -102,7 +101,7 @@ stopwords3<-c("a", "plus", "i", "mise", "o", "the", "d’un", "d'une", "entre", 
 dropwords3 <-c("fleuve", "sénégal","senegal", "coyne", "et bellier", "fcfa", "s.a_agrer_n.v", "rapport_final_phase", "b.doc_rapport_", "rapport_rp_bellier", 
                 " n.v_mali_etude", "s.a_n.v_mali", "mio_nombre_d'unités", "n.v_mali_etude", "b.doc_rp_bellier", 
                "phase_gouina_b.doc", "rp_bellier_gouina", "mali_etude_impacts", "gouina_b.doc_rp")
-
+# -----------------------------------------------------
 # corpus --> tokens 
 test_tokens <- tokens(test_corpus, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 1)
 
@@ -115,6 +114,7 @@ tokens_n3 <- tokens_remove(test_tokens, c(stopwords("french"), stopwords1, dropw
 tokens_n3 <- tokens(tokens_n3, remove_punct = TRUE, remove_numbers = TRUE, remove_symbols = FALSE, ngrams = 3)
 tokens_n3 <- tokens_remove(tokens_n3, c(stopwords("french"), stopwords3, dropwords3))
 
+# -----------------------------------------------------
 # tokens --> dfm 
 # note: if we want a to use bi or trigrams in our analysis we set that when we tokenize and then make than into a dfm 
 test_dfm <- dfm(test_tokens, tolower = TRUE, remove = c(stopwords("french"), stopwords1, dropwords1), remove_punct = TRUE)
@@ -128,6 +128,7 @@ topfeatures(dfm_n2)
 dfm_n3 <- dfm(tokens_n3, tolower = TRUE, remove_punct = TRUE)
 topfeatures(dfm_n3)
 
+# -----------------------------------------------------
 # frequency analysis
 freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent (fixed using correct encoding)
 head(freq, 200)
@@ -148,6 +149,7 @@ dfm_select(test_dfm, pattern = "é", valuetype = "regex") %>% topfeatures()
 
 nfeat(test_dfm) # number of features
 
+# -----------------------------------------------------
 # make a feature co-occurence matrix https://tutorials.quanteda.io/basic-operations/fcm/fcm/
 test_dfm_trim <- dfm_trim(test_dfm, min_termfreq = 100)
 nfeat(test_dfm_trim) # number of features
@@ -191,6 +193,7 @@ size <- log(colSums(dfm_select(dfm_n3, feat)))
 set.seed(144)
 textplot_network(fcm_n3_trim_select, min_freq = 0.8, vertex_size = size / max(size) * 3) 
 
+# -----------------------------------------------------
 # descriptive statistics (unigram)
 freq <- textstat_frequency(test_dfm, n = 5, groups = "doc_type") # what are the groups assessmentX and studyX? (TA) 
 # just marking the ones that I could recall that are incomplete pdfs
@@ -216,7 +219,6 @@ head(freq_by_decade_n3, 20)
 # I think that's a good idea, we can also try do those periods of time we are interested in (EH)-I like this better! (TA)
 
 # plot of most frequent words
-# should we think about dropping fleuve and senegal? (EH) -- I think we should (TA)
 test_dfm %>% textstat_frequency(n = 25) %>%
   ggplot(aes(x = reorder(feature, frequency), y = frequency)) +
   geom_point() +
@@ -244,6 +246,7 @@ dfm_n3 %>% textstat_frequency(n = 25) %>%
 set.seed(144)
 textplot_wordcloud(test_dfm, max_words=100)
 
+# -----------------------------------------------------
 # calculate lexical diversity
 test_lexdiv <- textstat_lexdiv(test_dfm)
 
@@ -263,20 +266,21 @@ clust <- hclust(test_dist)
 plot(clust, xlab = "Distance", ylab = NULL)
 # but we would need to change the titles or just use one part of the title to be able to see the clusters
 
+# -----------------------------------------------------
 #relative frequency analysis
 require(lubridate)
 
-# this won't work until we get a date variable
 # try this relative frequency analysis with our key time periods 
-#tstat_key <- textstat_keyness(test_dfm,
-    #target = year(docvars(test_dfm, 'year')) >= 2016)
-#attr(tstat_key, 'documents') <- c('2016', '2012-2015')
+# time periods: pre-OMVS (before 1972); financing/planning (1970s-1981); construction (1981-1987); 
+# post-construction assessments (1987-1990s)
+# PASIE (1998-2002); SDAGE (2002-);PGIRE (2006-2013); 
+# upper Senegal hydroelectric dam construction (2010-2018)
 
-# TA: is the date variable already in the format we need it in--My guess is that's why
-# plugging it into the year function does not work...not sure though
+# https://rdrr.io/cran/quanteda/man/textstat_keyness.html
+# https://rdrr.io/cran/quanteda/man/textplot_keyness.html
+
 tstat_key <- textstat_keyness(test_dfm,
- target = docvars(test_dfm, 'year') >= 1990) # I think this works but I'm not sure if
-# it is doing what we want it to (TA).
+ target = docvars(test_dfm, 'year') < 1987, "pre-construction", "post-construction") # 
 textplot_keyness(tstat_key)
 # very confused about how the "attr()" function works for this -- the results seem to 
 # be the same with our without it
@@ -284,6 +288,7 @@ textplot_keyness(tstat_key)
 
 #textplot_keyness(tstat_key)
 
+# -----------------------------------------------------
 # colocation analysis (using tokens not dfm, so stopwords and others not dropped, so it's messy)
 tstat_col <- tokens_select(test_tokens, pattern = '^[A-Z]', 
                                 valuetype = 'regex', 
@@ -292,8 +297,8 @@ tstat_col <- tokens_select(test_tokens, pattern = '^[A-Z]',
   textstat_collocations(min_count = 100)
 head(tstat_col_caps, 20) # this is helpful in figuring out what to drop 
 
-
-# Searching for specific words (unigrams)
+# -----------------------------------------------------
+# searching for specific words (unigrams)
 
 # We can do this two ways: (1) look for specific words AND/OR (2) look for specific
 # nexus words
