@@ -278,17 +278,24 @@ require(lubridate)
 
 # https://rdrr.io/cran/quanteda/man/textstat_keyness.html
 # https://rdrr.io/cran/quanteda/man/textplot_keyness.html
+
+# trying keyness by pre and post construction periods 
 period <- ifelse(docvars(test_corpus, "year") < 1987, "pre-construction", "post-construction")
 dfmat1 <- dfm(test_corpus, groups = "period", remove = c(stopwords("french"), stopwords1, dropwords1), remove_punct = TRUE)
 head(dfmat1) # make sure 'pre-construction' is in the first row
 head(tstat1 <- textstat_keyness(dfmat1), 10)
 tail(tstat1, 10)
 
-# picking up many errors 
 dfmat1 <- test_corpus %>%
   dfm(groups = "period", remove = c(stopwords("french"), stopwords1, dropwords1), remove_punct = TRUE)
 tstat1 <- textstat_keyness(dfmat1, target = "pre-construction")
-textplot_keyness(tstat1, margin = 0.2, n = 10)
+textplot_keyness(tstat1, margin = 0.2, n = 10) # still picking up too many errors 
+
+# trying keyness by document type 
+dfmat2 <- dfm(test_corpus, groups = "doc_type", remove = c(stopwords("french"), stopwords1, dropwords1),
+              remove_punct = TRUE)
+tstat2 <- textstat_keyness(dfmat2, target = "assessment") # can use lr instead of chi 2
+textplot_keyness(tstat2, n = 10) # still picking up too many errors 
 
 # very confused about how the "attr()" function works for this -- the results seem to 
 # be the same with our without it
