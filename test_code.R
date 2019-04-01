@@ -278,14 +278,20 @@ require(lubridate)
 
 # https://rdrr.io/cran/quanteda/man/textstat_keyness.html
 # https://rdrr.io/cran/quanteda/man/textplot_keyness.html
+period <- ifelse(docvars(test_corpus, "year") < 1987, "pre-construction", "post-construction")
+dfmat1 <- dfm(test_corpus, groups = "period", remove = c(stopwords("french"), stopwords1, dropwords1), remove_punct = TRUE)
+head(dfmat1) # make sure 'pre-construction' is in the first row
+head(tstat1 <- textstat_keyness(dfmat1), 10)
+tail(tstat1, 10)
 
-tstat_key <- textstat_keyness(test_dfm,
- target = docvars(test_dfm, 'year') < 1987, "pre-construction", "post-construction") # 
-textplot_keyness(tstat_key)
+# picking up many errors 
+dfmat1 <- test_corpus %>%
+  dfm(groups = "period", remove = c(stopwords("french"), stopwords1, dropwords1), remove_punct = TRUE)
+tstat1 <- textstat_keyness(dfmat1, target = "pre-construction")
+textplot_keyness(tstat1, margin = 0.2, n = 10)
+
 # very confused about how the "attr()" function works for this -- the results seem to 
 # be the same with our without it
-
-
 #textplot_keyness(tstat_key)
 
 # -----------------------------------------------------
