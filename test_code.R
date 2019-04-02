@@ -54,22 +54,23 @@ for (i in seq(1960,2010,10)){
 test_data$decade<-paste(test_data$decade,"s",sep="")
 
 names(test_data) # check it worked
+table(test_data$year)
 table(test_data$decade)
 table(test_data$doc_type)
-table(test_data$decade, test_data$doc_type)
+sum <- table(test_data$decade, test_data$doc_type)
 #table(test_data$decade, test_data$organization) 
+write.table(sum, "decade_by_type.txt", sep="\t")
 
 # form a corpus 
 # ref: https://tutorials.quanteda.io/basic-operations/corpus/corpus/
 test_corpus <- corpus(test_data)
 summary(test_corpus) 
-
 # -----------------------------------------------------
 # keep corpus as an original reference copy -- do not edit directly 
 # make timeline based on quanteda quickstart code 
 tokenInfo <- summary(test_corpus)
 if (require(ggplot2))
-ggplot(data = tokenInfo, aes(x = year, y = Tokens, group = 1)) + geom_line() + geom_point() +
+ggplot(data = tokenInfo, aes(x = year, y = Tokens, group = 1, na.rm = TRUE)) + geom_line() + geom_point() +
   scale_x_continuous(labels = c(seq(1789, 2017, 12)), breaks = seq(1789, 2017, 12)) +
   theme_bw()
 # -----------------------------------------------------
