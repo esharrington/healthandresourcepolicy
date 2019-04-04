@@ -312,27 +312,40 @@ head(textstat_frequency(dfm(test_corpus, dictionary = mydict)))
 
 # (2) Look for words falling into pre-defined nexus categories
 # Going through the FEW-H Keyword Glossary to define the dictionary
-mydict <- dictionary(list(food = c("cultivée","diète","agricole","agricoles","hydro-agricoles",
-                                   "agro-indsutriels","champ","echec", "marche",
-                                   "betail","mouton","vache","chevre","culture","mil","sorgho",
-                                   "riz","arachide","fertilisants"),
-                          health = c("géohelminthiases","moustiquaires","bilharzioses",
-                                     "parasitologiques","sanitaire","épidémiologique",
-                                     "paludisme","urinaire","haematobium","intestinale",
-                                     "déparasités","morbidite","endemie","recrudescence",
-                                     "parasitose","transmission","reinfestation","mollusques",
-                                     "emergence","epidemie","ankylostomiase","ascaridaise",
-                                     "trichophalosela","elimination","onchocercose",
-                                     "alimentation","ration","privations","recolte","nourriture",
-                                     "subsister","malnutrition","avitaminose","anemie","kwashiorkor",
-                                     "maladie","schistosomiase","bilharziose","trypanosomiase",
-                                     "propagation","vecteur","malacologie","escargot","moustique",
-                                     "hote","mouche","bulinus","biomphalaria","anopheles","glossina",
-                                     "larvae","epidemie","hopital","recrudescence"),
+mydict <- dictionary(list(food = c("cultivée","riziculture","hydro-agricoles",
+                                   "agro-industriels","salinisation","champ",
+                                   "echec","marche","betail","mouton",
+                                   "vache","chevre","culture","mil","sorgho",
+                                   "riz","arachide","fertilisants", "diète",
+                                   "agricole","agricoles","hydro-agricoles","agro-indsutriels"),
+                          
+                        health = c("géohelminthiases","moustiquaires","bilharzioses",
+                          "parasitologiques","sanitaire","épidémiologique","paludisme",
+                          "urinaire","haematobium","intestinale",
+                          "déparasités","morbidite","mortalite","intensite","traitement",
+                          "endemie","recrudescence","parasitose","transmission",
+                          "reinfestation","mollusques","emergence",
+                          "epidemie","ankylostomiase","ascaridaise",
+                          "la trichophalosela","elimination","onchocercose",
+                          "filariose lymphatique", "alimentation","sous-nutrition",
+                          "ration","privations","recolte","nourriture",
+                          "subsister","malnutrition","avitaminose","anemie",
+                          "kwashiorkor","maladie","schistosomiase",
+                          "bilhraziose","paludisme","trypanosomiase","propagation",
+                          "vecteur","malacologie","escargot","moustique","hote",
+                          "mouche","bulinus","biomphalaria","anopheles",
+                          "glossina","larvae","epidemie","endemicite",
+                          "hyper-endemicite","meso-endemicite","hypo-endemicite",
+                          "holo-endemicite","hopital","recrudescence",
+                          "morbidite","mortalite","incidence","danger",
+                          "vaincre","cas","besoins","prevention","eradication"),
+                        
                           water = c("crue","eau", "puit","aquifere","recharge","rebattement",
                                     "endiguements","superficie","estuaire","evaporation","salinite",
-                                    "debit","salinisation"),
-                          energy=c("hydroélectrique","énergie","électrique")))
+                                    "debit","salinisation","sécheresse"),
+                        
+                          energy=c("hydroélectrique","énergie","électrique", "hydro-electrique",
+                                   "electricite")))
 # had to add "énergie" and "électrique"...not in keyword glossary but the energy category
 # seemed lonely :(
 
@@ -424,7 +437,7 @@ mydict_n3 <- dictionary(list(food = c("cultivées en irrigué", "diète des mén
                                        "d’évaluation des impacts",
                                        "conditions de vie"),
                              
-                             energy=c("production d'energie electrique")))
+                             energy = c("production d'energie electrique")))
 
 head(textstat_frequency(dfm(test_corpus, dictionary = mydict_n3)))
 
