@@ -294,6 +294,7 @@ head(dfmat1) # make sure 'pre-construction' is in the first row
 head(tstat1 <- textstat_keyness(dfmat1), 10)
 tail(tstat1, 10)
 
+## hmm this period grouping worked before and now it's not, I'll try to fix it again (EH)
 dfmat1 <- test_corpus %>%
   dfm(groups = "period", remove = c(stopwords("french"), stopwords1, dropwords1), remove_punct = TRUE)
 tstat1 <- textstat_keyness(dfmat1, target = "pre-construction")
@@ -316,7 +317,7 @@ tstat_col <- tokens_select(test_tokens, pattern = '^[A-Z]',
                                 case_insensitive = TRUE, 
                                 padding = TRUE) %>% 
   textstat_collocations(min_count = 100)
-head(tstat_col_caps, 20) # this is helpful in figuring out what to drop 
+head(tstat_col, 20) # this is helpful in figuring out what to drop 
 
 # -----------------------------------------------------
 # searching for specific words (unigrams)
