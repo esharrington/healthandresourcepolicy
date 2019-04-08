@@ -139,7 +139,7 @@ topfeatures(dfm_n3)
 # -----------------------------------------------------
 # frequency analysis
 freq <- textstat_frequency(test_dfm) # biggest issue seems to be e with accent (fixed using correct encoding)
-head(freq, 200)
+head(freq, 50)
 
 write.table(freq, "freq_n1.txt", sep="\t")
 
