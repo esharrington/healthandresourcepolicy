@@ -73,6 +73,8 @@ if (require(ggplot2))
 ggplot(data = tokenInfo, aes(x = year, y = Tokens, group = 1, na.rm = TRUE)) + geom_line() + geom_point() +
   scale_x_continuous(labels = c(seq(1789, 2017, 12)), breaks = seq(1789, 2017, 12)) +
   theme_bw()
+
+write.table(tokenInfo, "tokens.txt", sep="\t")
 # -----------------------------------------------------
 # explore documents
 kwic(test_corpus, "santé") # shows "keywords-in-context"
