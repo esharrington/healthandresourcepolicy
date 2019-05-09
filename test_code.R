@@ -19,7 +19,8 @@ library(readtext)
 library(quanteda)
 
 # test based on Welbers p. 248 
-filepath <- ("/nfs/HealthandResourcePolicy-data/Task 1/corpus/for_R")
+filepath <- ("/nfs/HealthandResourcePolicy-data/Task 1/corpus/for_R/1980s_key")
+# testing with a subset from 1980s
 # approach from quanteda github 
 # ref: https://github.com/quanteda/quanteda_tutorials/blob/master/content/import-data/multiple-files.en.Rmarkdown
 
@@ -372,7 +373,8 @@ mydict <- dictionary(list(food = c("cultivée","riziculture","hydro-agricoles",
                                     "debit","salinisation","sécheresse"),
                         
                           energy=c("hydroélectrique","énergie","électrique", "hydro-electrique",
-                                   "electricite")))
+                                   "electricite", "renouvelable", "hydroelectrique", "electrification", 
+                                   "energie")))
 # had to add "énergie" and "électrique"...not in keyword glossary but the energy category
 # seemed lonely :(
 
