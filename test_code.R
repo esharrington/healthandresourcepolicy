@@ -420,7 +420,7 @@ mydict_n2 <- dictionary(list(food = c("autosuffisance alimentaire","aménagement
                                     "course d'eau","puit profond","nappe souterraines",
                                     "aquifere alluvial","nappe phreatique","depot alluvial"),
                           
-                          energy=c("l'énergie électrique")))
+                          energy=c("l'énergie électrique", "project energie")))
 
 head(textstat_frequency(dfm(test_corpus, dictionary = mydict_n2)))
 
