@@ -19,7 +19,7 @@ library(readtext)
 library(quanteda)
 
 # test based on Welbers p. 248 
-filepath <- ("/nfs/HealthandResourcePolicy-data/Task 1/corpus/for_R/1980s_key")
+filepath <- ("/nfs/HealthandResourcePolicy-data/Task 1/corpus/documents_190912_selected")
 # testing with a subset from 1980s
 # approach from quanteda github 
 # ref: https://github.com/quanteda/quanteda_tutorials/blob/master/content/import-data/multiple-files.en.Rmarkdown
