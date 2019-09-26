@@ -1,7 +1,7 @@
 # make a shortcut from home directory to our group folder 
 # file.symlink(from = '/nfs/HealthandResourcePolicy-data', to = 'data')
 
-setwd("~/healthandresourcepolicy/data/Task 1/corpus")
+setwd("~/healthandresourcepolicy/data/Task 1/corpus/documents_190912_selected")
 
 # clear workspace
 rm (list =ls())
