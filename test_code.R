@@ -321,7 +321,7 @@ tstat_col <- tokens_select(test_tokens, pattern = '^[A-Z]',
 head(tstat_col, 20) # this is helpful in figuring out what to drop 
 
 # -----------------------------------------------------
-# searching for specific words (unigrams)
+# searching for specific words (unigrams, bigrams, trigrams)
 
 # We can do this two ways: (1) look for specific words AND/OR (2) look for specific
 # nexus words
@@ -387,44 +387,104 @@ head(textstat_frequency(dfm(test_corpus, dictionary = mydict)))
 
 
 # Searching for specific words (bigrams)
+# added new terms (incomplete 10/2/2019)
 
 # Look for words falling into pre-defined nexus categories
-# Going through the FEW-H Keyword Glossary to define the dictionary
-mydict_n2 <- dictionary(list(food = c("autosuffisance alimentaire","aménagements hydroagricoles",
-                                   "activités agricoles","périmètres irrigués","aménagements agricoles",
-                                   "l’autosuffisance alimentaire","amenagement agricole",
-                                   "development agricole","production agricole",
-                                   "zone agricole","bonnes terres","champ negligee"),
+# Going through the FEW-H Keyword Glossary to define the dictionary 
+mydict_n2 <- dictionary(list(food = c("agriculture irriguee", "amenagement hydroagricole", 
+                                      "amenagements irrigues","arbres fruitiers",
+                                      "autosuffisance alimenatire","besoins agricoles",
+                                      "culture ceralieres","culture de bas-fonds",
+                                      "culture intercalaire","culture irriguee",
+                                      "cultures maraicheres","cultures pluviales",
+                                      "deficit cerealier","developpement agro-sylvo-pastoral",
+                                      "eau agricole","économie agricole","equipement d'irrigation",
+                                      "exploitation agricole","flux d'irrigation",
+                                      "infrastructure hydro-agricole","intensification culturale",
+                                      "intensification agricole","jardins maraichers",
+                                      "perimetres irrigues","perimetres maraichers",
+                                      "perimetres publiques", "petit agriculteurs","plan agricole",
+                                      "potential agricole","potentiel irrigable","pression agricole",
+                                      "production maraichere","produits agricoles",
+                                      "produits alimentaires","projets agro-industriels",
+                                      "projets d'irrigation","projets hydro-agricoles",
+                                      "répartition culturale","securite alimentaire",
+                                      "services d'irrigation","solutions d'irrigation",
+                                      "activités agricoles","amenagement agricole",
+                                      "aménagements agricoles","aménagements hydroagricoles",
+                                      "autosuffisance alimentaire","bonnes terres","champ negligee",
+                                      "development agricole","l’autosuffisance alimentaire",
+                                      "périmètres irrigués","production agricole","zone agricole"
+                                      ),
                           
-                          health = c("nutrition humaine","consommation moyenne","consommation alimentaire",
-                                     "degrees alimentaires","bonne recolte","calories suffisant",
-                                     "carences vitaminiques","carence proteinique","moyens alimentaires",
-                                     "etat nutritionelle","contact mollusque-homme","eau infestee",
-                                     "eah propre","eau saine","maladies hydriques","intensite d'infestation",
-                                     "surveillance epidemiologique","district sanitiare","indicator parasitologique",
-                                     "emission cercarienne","mollusques hotes","faible prevalence",
-                                     "forte prevalence","deparasitage repete","se reinfecter",
-                                     "statistique sanitaire","lutte efficace","taux d'infestation",
-                                     "zone endemique","indice d'infestation","sante publique",
-                                     "autorites sanitaires","plan sanitaire","repercussions sanitaires",
-                                     "facteurs sanitaires","installations sanitaires","maladie grave",
-                                     "maladie endemique","transmission saisonniere","transmission reduite",
-                                     "infection humaine","infections nombreux","taux d'infection",
-                                     "infection d'eleve","dissemination d'infection","conditions favorables",
-                                     "endemicite forte","taux d'infestation","lutte contre",
-                                     "future incidence","mesure prophylactique","chiffres elevees"),
+                          health = c("maladies parasitaires","santé publique","alimentation humaine",
+                                     "baignade assainies", "besoins alimentaires", 
+                                     "conditions socio-sanitaires","conditions sanitaires",
+                                     "education sanitaire", "endroit assaini", "gestion hygiene", 
+                                     "impacts sanitaires", "maladies hydriques", "personnes exposees", 
+                                     "problemes sanitaires", "sante humaine", "sante publique", 
+                                     "autorites sanitaires", "bonne recolte", "calories suffisant", 
+                                     "carence proteinique", "carences vitaminiques", 
+                                     "chiffres elevees", "conditions favorables", 
+                                     "consommation alimentaire", "consommation moyenne", 
+                                     "contact mollusque-homme","degrees alimentaires", 
+                                     "deparasitage repete", "dissemination d'infection", 
+                                     "district sanitiare", "eah propre","eau infestee","eau saine", 
+                                     "emission cercarienne", "endemicite forte", "etat nutritionelle", 
+                                     "facteurs sanitaires", "faible prevalence", "forte prevalence", 
+                                     "future incidence", "indicator parasitologique", 
+                                     "indice d'infestation", "infection d'eleve", 
+                                     "infection humaine", "infections nombreux", 
+                                     "installations sanitaires", "intensite d'infestation", 
+                                     "lutte contre", "lutte efficace", "maladie endemique", 
+                                     "maladie grave", "maladies hydriques", "mesure prophylactique", 
+                                     "mollusques hotes", "moyens alimentaires", "nutrition humaine", 
+                                     "plan sanitaire", "repercussions sanitaires", "sante publique", 
+                                     "se reinfecter", "statistique sanitaire", "surveillance epidemiologique", 
+                                     "taux d'infection", "taux d'infestation", "taux d'infestation", 
+                                     "transmission reduite", "transmission saisonniere", "zone endemique"
+                                     ),
                           
-                          water = c("langue salee","reseau d'irrigation","canaux d'irrigation",
-                                    "l'eau d'irrigation","qualite d'eau","eau propre",
-                                    "eau fraichee","eau salee","eau stagnante",
-                                    "course d'eau","puit profond","nappe souterraines",
-                                    "aquifere alluvial","nappe phreatique","depot alluvial"),
+                          water = c("actuel canal","apports hydriques", "bassin superieur", 
+                                    "bief aval","bras secondaire","canal d'amenee", "chateau d'eau", 
+                                    "conditions hydrauliques", "cote amont", "cote aval", 
+                                    "cours superieur","critères hydrauliques","crue annuelle", 
+                                    "crue artificielle","crue naturelle","crues exceptionnelles", 
+                                    "crues extremes","crues faibles","crues observables", 
+                                    "débit lâché","débit maximal","debit minimum", "débit résiduel", 
+                                    "deficits pluviometriques", "desequilibre hydrologique", 
+                                    "disponibilite d'eau","eau potable", "eau regularisee", 
+                                    "eau souterraine", "eau superficielle", "efficience hydraulique", 
+                                    "etiages severes", "gestion hydraulique", "grands affluents", 
+                                    "infrastructure hydraulique", "inondation satisfaisante", 
+                                    "mecanismes hydrologiques", "nappes souterraines", "niveau aval", 
+                                    "niveau d'eau", "nouveau canal", "ouvrages hydrauliques", 
+                                    "periodes d'etiage","plan d'eau","plan hydraulique/d'eau", 
+                                    "pluviometrie annuelle", "régime établi", "régime transitoire", 
+                                    "reseau hydrographique", "reservoirs aquiferes", "rive droite", 
+                                    "aquifere alluvial", "canaux d'irrigation", "course d'eau", 
+                                    "depot alluvial", "eau fraichee", "eau propre", "eau salee", 
+                                    "eau stagnante", "l'eau d'irrigation", "langue salee", 
+                                    "nappe phreatique", "nappe souterraines", "puit profond", 
+                                    "qualite d'eau","reseau d'irrigation"
+                                    ),
                           
-                          energy=c("l'énergie électrique", "project energie")))
+                          energy=c("branchement electrique","capacite hydroelectrique",
+                                   "centrales hydroelectriques","production d'énergie", 
+                                   "developpement energetique", "dissipation d'énérgie", 
+                                   "electrification prioritaire","electrification rurale", 
+                                   "energie hydroelectrique","energie produite", 
+                                   "energie renouvelable","equipement hydroelectrique",
+                                   "ouvrage hydroelectrique","potentiel hydroelectrique",
+                                   "production hydroelectrique","production d'énergie", 
+                                   "production électrique", "projet hydroelectrique", 
+                                   "puissance installee", "puissance maximale", 
+                                   "reseaux d'electricite","reserve d'energie", 
+                                   "secteur energetique", "d'amenagements hydroelectriques", 
+                                   "l’énergie électrique"
+                                   )))
 
 head(textstat_frequency(dfm(test_corpus, dictionary = mydict_n2)))
-
-
 
 # Searching for specific words (trigrams)
 
